@@ -1,0 +1,99 @@
+#!/usr/bin/ruby -w
+
+require 'nokogiri'
+require 'json'
+require 'open-uri'
+require 'shellwords'
+require 'ostruct'
+require 'optparse'
+
+require 'bbbib'
+
+
+@options = OpenStruct.new(
+  :htmlfile => nil,
+  :showmatches => false,
+  :nocopy => false,
+  :infile => nil,
+)
+
+opt_parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename $0} [options] [URL]"
+  opts.separator("")
+  opts.separator("Options:")
+
+  opts.on('-f', '--file FILE', 'HTML file to save') do |f|
+    @options.htmlfile = f
+  end
+
+  opts.on('-i', '--input FILE', 'HTML file as input') do |f|
+    @options.infile = f
+  end
+
+  opts.on('-n', '--nocopy', 'Don\'t copy to clipboard') do
+    @options.nocopy = true
+  end
+
+  opts.on('-s', '--show', 'Show matches') do
+    @options.showmatches = true
+    class BBBib::Finder
+      def msg(message)
+        STDERR.puts(message)
+      end
+    end
+  end
+
+  opts.on_tail('-h', '--help', 'Show this help') do
+    puts opts
+    exit
+  end
+
+end
+
+opt_parser.parse!(ARGV)
+
+#
+# Get the URL
+#
+if ARGV[0]
+  url = ARGV[0]
+else
+  puts "Enter a URL:"
+  url = STDIN.readline
+  url.chomp!
+end
+url = URI(url)
+
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:58.0) ' + \
+  'Gecko/20100101 Firefox/58.0'
+if @options.infile
+  file = open(@options.infile) { |f| f.read }
+else
+  curlargs = "-s -4 -L " + \
+    "--user-agent #{USER_AGENT.shellescape} #{url.to_s.shellescape}"
+  file = `curl -k #{curlargs}`
+  if file == ''
+    file = `curl #{curlargs}`
+  end
+end
+
+if @options.htmlfile
+  open(@options.htmlfile, 'w') do |f|
+    f.write(file)
+  end
+end
+doc = Nokogiri::HTML(file)
+
+source = BBBib::Source.for(doc, url).new(doc, url)
+
+source.collect_params
+
+res = "\n#{source.make_bib}\n"
+puts res
+unless @options.nocopy
+  open('|pbcopy', 'w') do |f|
+    f.puts res
+  end
+  puts "Copied to clipboard."
+end
+
