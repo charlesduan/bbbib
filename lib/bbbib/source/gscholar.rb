@@ -47,7 +47,7 @@ module BBBib; class GScholarSource < Source
       if item =~ /^.*, \d+ [\w. ]+ \d+ - ([\w., ]+) \d{4}$/
         court = $1
         msg("      Found court #$1...")
-        return lookup_court(court) || court
+        return lookup_court(court)
       else
         return nil
       end

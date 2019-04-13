@@ -15,6 +15,7 @@ require 'bbbib'
   :showmatches => false,
   :nocopy => false,
   :infile => nil,
+  :url => nil,
 )
 
 opt_parser = OptionParser.new do |opts|
@@ -32,6 +33,10 @@ opt_parser = OptionParser.new do |opts|
 
   opts.on('-n', '--nocopy', 'Don\'t copy to clipboard') do
     @options.nocopy = true
+  end
+
+  opts.on('-p', '--paste', 'Take input URL from pasteboard') do
+    @options.url = `pbpaste`
   end
 
   opts.on('-s', '--show', 'Show matches') do
@@ -55,14 +60,15 @@ opt_parser.parse!(ARGV)
 #
 # Get the URL
 #
-if ARGV[0]
-  url = ARGV[0]
+if @options.url
+elsif ARGV[0]
+  @options.url = ARGV[0]
 else
   puts "Enter a URL:"
-  url = STDIN.readline
-  url.chomp!
+  @options.url = STDIN.readline
 end
-url = URI(url)
+@options.url.chomp!
+url = URI(@options.url)
 
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:58.0) ' + \
   'Gecko/20100101 Firefox/58.0'
