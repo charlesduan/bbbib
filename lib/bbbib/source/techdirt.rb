@@ -6,7 +6,7 @@ module BBBib; class TechdirtSource < Source
 
   def collect_params
     super
-    res['author'].gsub!(/^.*\u2014\?/, '')
+    @params['author'].gsub!(/^.*\u2014\?/, '')
   end
 
 end; end
