@@ -62,12 +62,11 @@ opt_parser.parse!(ARGV)
 #
 if @options.url
 elsif ARGV[0]
-  @options.url = ARGV[0]
+  @options.url = ARGV[0].chomp
 else
   puts "Enter a URL:"
-  @options.url = STDIN.readline
+  @options.url = STDIN.readline.chomp
 end
-@options.url.chomp!
 url = URI(@options.url)
 
 USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:58.0) ' + \
