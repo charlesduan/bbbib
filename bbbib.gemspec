@@ -2,13 +2,14 @@ require 'rake'
 
 Gem::Specification.new do |s|
     s.name = 'bbbib'
-    s.version = '0.0.4'
+    s.version = '0.0.5'
     s.date = '2019-02-10'
     s.summary = 'Automatic bibliographic information retrieval'
     s.description = 'Collects information for citations to websites'
     s.author = [ 'Charles Duan' ]
     s.email = 'rubygems.org@cduan.com'
     s.executables << 'bbbib'
+    s.executables << 'cap'
     s.files = FileList[
         'lib/**/*.rb',
         'test/**/*.rb',

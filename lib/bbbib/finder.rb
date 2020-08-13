@@ -73,7 +73,7 @@ module BBBib; class Finder
     text = text.gsub(/[^[:print:]]/, "?")
     text = text.gsub(/\s\s+/, " ")
     text = text.gsub(/\\/, "\\textbackslash")
-    text = text.gsub(/%{}/) { "\\#$&" }
+    text = text.gsub(/[%{}]/) { "\\#$&" }
     text = more_tex_escape(text)
     text = text.gsub("AMPERSAND", "&")
     text = "{#{text}}" if text =~ /[,=]/

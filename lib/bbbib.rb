@@ -16,3 +16,6 @@ require 'bbbib/source/techdirt'
 require 'bbbib/source/twitter'
 require 'bbbib/source/wikipedia'
 require 'bbbib/source/gscholar'
+require 'bbbib/source/bepress'
+
+require 'bbbib/titlecap'

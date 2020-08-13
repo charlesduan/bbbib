@@ -1,0 +1,84 @@
+#!/usr/bin/ruby -w
+
+require 'ostruct'
+require 'optparse'
+
+require 'bbbib/titlecap'
+
+@options = OpenStruct.new(
+  :paste => false,
+  :copy => false,
+  :conv => :tex,
+  :wrap => true,
+  :aggressive => false,
+)
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename $0} [options] [text]"
+  opts.separator('')
+  opts.separator('Options:')
+  opts.on('-p', '--paste', 'Paste text from clipboard') do
+    @options.paste = true
+  end
+  opts.on('-c', '--copy', 'Copy output to clipboard') do
+    @options.copy = true
+  end
+  opts.on('-u', '--unicode', 'Output Unicode') do
+    @options.conv = :unicode
+  end
+  opts.on('-l', '--oneline', 'Do not wrap lines') do
+    @options.wrap = false
+  end
+  opts.on('-a', '--aggressive', 'Force downcasing of lowercase words') do
+    @options.aggressive = true
+  end
+
+  opts.on_tail('-h', '--help', 'Show this help') do
+    puts opts
+    exit
+  end
+end.parse!(ARGV)
+
+if @options.paste
+  text = IO.popen("pbpaste") do |f| f.read end
+elsif ARGV.length > 0
+  text = ARGV.join(" ")
+else
+  text = STDIN.read
+end
+text.strip!
+
+# If it's all uppercase, first make it lowercase. Otherwise we assume that the
+# cases are approximately correct (to avoid accidentally lowercasing acronyms).
+pre_text = ''
+post_text = ''
+
+# Strip off leading and trailing material
+pre_text, text = $&, $' if text =~ /\Atitle=\{?/
+post_text, text = $&, $` if text =~ /\}?,?\z/
+
+# Convert
+tc = TitleCap.new
+tc.aggressive = @options.aggressive
+tc.conversion = @options.conv
+text = tc.recase(text)
+
+# Add back leading and trailing material
+text = pre_text + text + post_text
+
+# Wrap lines
+if @options.wrap
+  width = 80
+  text = text.gsub(
+    /(.{1,#{width}})( +|$\n?)|(\S{#{width},})( +|$\n?)/, "\\1\\3\n"
+  )
+end
+
+# Output
+puts text
+if @options.copy
+  IO.popen("pbcopy", 'w') do |f| f.write(text) end
+  puts "Copied to clipboard."
+end
+
+

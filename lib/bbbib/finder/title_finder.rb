@@ -29,7 +29,12 @@ module BBBib; class TitleFinder < Finder
       end
     end
     text.gsub!(/\.$/, "")
-    return text
+
+    tc = TitleCap.new
+    tc.aggressive = true
+    tc.conversion = :tex
+    return tc.recase(text)
+
   end
 end; end
 

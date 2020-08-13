@@ -21,7 +21,7 @@ module BBBib; class UrlFinder < Finder
 
   def postprocess(item)
     if item =~ /^\//
-      (URI.parse(@url) + item).to_s
+      (@url + item).to_s
     else
       item
     end
