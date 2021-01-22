@@ -33,3 +33,8 @@ module BBBib; class UrlFinder < Finder
 end; end
 
 
+module BBBib; class OpturlFinder < UrlFinder
+  def param
+    "opturl"
+  end
+end; end

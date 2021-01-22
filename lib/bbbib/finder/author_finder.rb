@@ -57,6 +57,8 @@ module BBBib; class AuthorFinder < Finder
 
   def process_items(items)
     msg("    Found items #{items.inspect}...")
+
+    # Some tests to discard invalid authors
     items = items.compact.flatten.map { |item|
       item = item['name'] || item.to_s if item.is_a?(Hash)
       item = $' if item =~ /(^| )by /i
@@ -73,10 +75,15 @@ module BBBib; class AuthorFinder < Finder
     }.uniq
 
     msg("      Matched as #{items.inspect}")
+
+    return etal_return(items)
+  end
+
+  def etal_return(items)
     case items.count
     when 0 then return nil
     when 1 then return items[0]
-    when 2 then return "#{items[0]} AMPERSAND #{items[1]}"
+    when 2 then return items
     else return "#{items[0]} et al."
     end
   end

@@ -10,18 +10,14 @@ module BBBib; class Finder
 
   def find
     msg("Finding for #{param}...")
-    finders.each do |xpath, postproc, procall=false|
+    finders.each do |xpath, postproc|
       res = @doc.xpath(xpath)
       next if res.empty?
       msg("  Matched #{xpath}...")
       begin
-        if procall
-          items = [ postproc.call(res) ].flatten
-        else
-          items = res.to_a.map { |x|
-            postproc ? postproc.call(x) : x.content
-          }
-        end
+        items = res.to_a.map { |x|
+          postproc ? postproc.call(x) : x.content
+        }
       rescue
         warn("For #{param}, finder #{xpath} failed: #$!")
         next
@@ -33,6 +29,8 @@ module BBBib; class Finder
     return default_item
   end
 
+  # Process a list of items found. This method finds the first non-empty item,
+  # runs postprocess on it, and returns it. Otherwise it returns nil.
   def process_items(items)
     items.each do |item|
       next if item.nil? or item == ''
@@ -56,6 +54,7 @@ module BBBib; class Finder
 
   def make_param(text)
     return "" unless text
+    return text.map { |x| make_param(x) } if text.is_a?(Array)
     text = tex_escape(text)
     while text =~ /^[^\n]{72}/ && text =~ /^([^\n]{1,72}) /
       text = "#$1\n#$'"
@@ -76,7 +75,6 @@ module BBBib; class Finder
     text = text.gsub(/[%{}]/) { "\\#$&" }
     text = more_tex_escape(text)
     text = text.gsub("AMPERSAND", "&")
-    text = "{#{text}}" if text =~ /[,=]/
     return text
   end
   def more_tex_escape(text)

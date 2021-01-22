@@ -14,6 +14,7 @@ module BBBib; class BepressSource < Source
   end
 
   def collect_params
+    @params['opturl'] = bepress_meta('abstract_html_url')
     @params['name'] = bepress_meta('title')
     @params['cite'] = [
       bepress_meta('volume'),
@@ -33,6 +34,13 @@ module BBBib; class BepressSource < Source
     when 2 then @params['author'] = authors
     else        @params['author'] = "#{authors[0]} et al."
     end
+  end
+
+  def finders
+    [
+      AuthorFinder, TitleFinder, DateFinder, SiteFinder, OpturlFinder,
+      VolFinder, PageFinder
+    ]
   end
 
 

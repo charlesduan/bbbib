@@ -34,13 +34,14 @@ module BBBib; class Source
     end
   end
 
-  def ref_name
-    if @params['author'] && @params['author'] =~ /^\{?(.+?)\}?$/
+  def ref_name(val = @params['author'])
+    case val
+    when nil then return nil
+    when Array then return val.map { |x| ref_name(x) }.join("-")
+    when /^\{?(.+?)\}?$/
       authln = $1.sub(/ et al\./, '').split(/\s+/).last.downcase
       authln = nil unless authln =~ /^[\w-]+$/
       return authln
-    else
-      return nil
     end
   end
 
@@ -55,9 +56,15 @@ module BBBib; class Source
   end
 
   def make_bib
-    "\\def#{source_type}{#{ref_name}}{\n" + \
-      @params.map { |k, v| "#{k}=#{v}," }.join("\n") + \
-      "\n}"
+    res = "\\def#{source_type}{#{ref_name}}{\n"
+    @params.each do |k, v|
+      [ v ].flatten.each do |av|
+        av = "{#{av}}" if av =~ /[=,]/
+        res << "#{k}=#{av},\n"
+      end
+    end
+    res << "}"
+    return res
   end
 
 end; end
