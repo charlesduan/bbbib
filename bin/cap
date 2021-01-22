@@ -32,6 +32,11 @@ OptionParser.new do |opts|
   opts.on('-a', '--aggressive', 'Force downcasing of lowercase words') do
     @options.aggressive = true
   end
+  opts.on(
+    '--period-is-abbrev', 'Do not necessarily capitalize after periods'
+  ) do
+    @options.period_is_abbrev = true
+  end
 
   opts.on_tail('-h', '--help', 'Show this help') do
     puts opts
@@ -54,13 +59,14 @@ pre_text = ''
 post_text = ''
 
 # Strip off leading and trailing material
-pre_text, text = $&, $' if text =~ /\Atitle=\{?/
+pre_text, text = $&, $' if text =~ /\A(?:name|title)=\{?/
 post_text, text = $&, $` if text =~ /\}?,?\z/
 
 # Convert
 tc = TitleCap.new
 tc.aggressive = @options.aggressive
 tc.conversion = @options.conv
+tc.period_is_abbrev if @options.period_is_abbrev
 text = tc.recase(text)
 
 # Add back leading and trailing material

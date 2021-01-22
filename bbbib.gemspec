@@ -2,7 +2,7 @@ require 'rake'
 
 Gem::Specification.new do |s|
     s.name = 'bbbib'
-    s.version = '0.0.5'
+    s.version = '0.0.6'
     s.date = '2019-02-10'
     s.summary = 'Automatic bibliographic information retrieval'
     s.description = 'Collects information for citations to websites'

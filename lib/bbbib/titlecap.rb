@@ -3,6 +3,7 @@ class TitleCap
   LCWORDS = %w(
       a an and as at but by down for from if in into like near nor of on onto or
       out over past per plus so than the till to unto up upon via when with yet
+      v vs
   )
 
   QUOTE_TABLE = {
@@ -38,9 +39,17 @@ class TitleCap
   def initialize
     @aggressive = false
     @conversion = :tex
+    @punct_re = /[:;?!.]/
   end
 
   attr_accessor :aggressive, :conversion
+
+  #
+  # Treats periods as abbreviations, so following words are not uppercased.
+  #
+  def period_is_abbrev
+    @punct_re = /[:;?!]/
+  end
 
   # Changes the case of the given text.
   def recase(text)
@@ -74,9 +83,8 @@ class TitleCap
         res.push(recase_word(word, must_upper))
         next_must_upper = false
 
-      when /[:;?!.]/
-        # After these punctuation, always use uppercase. TODO: distinguish
-        # periods for abbreviations
+      when @punct_re
+        # After punctuation, always use uppercase.
         next_must_upper = true
         res.push(word)
 
