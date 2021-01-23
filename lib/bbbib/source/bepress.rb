@@ -8,38 +8,21 @@ module BBBib; class BepressSource < Source
   end
 
   def bepress_meta(name)
-    @doc.at_xpath(
-      "//meta[@name=\"bepress_citation_#{name}\"]/@content"
-    )
-  end
-
-  def collect_params
-    @params['opturl'] = bepress_meta('abstract_html_url')
-    @params['name'] = bepress_meta('title')
-    @params['cite'] = [
-      bepress_meta('volume'),
-      bepress_meta('journal_title'),
-      bepress_meta('firstpage')
-    ].join(" ")
-    @params['year'] = bepress_meta('date')
-    @params['issue'] = bepress_meta('issue')
-    authors = @doc.xpath(
-      "//meta[@name=\"bepress_citation_author\"]/@content"
-    ).map { |x|
-      x.to_s.sub(/^([^,]+), (.*)$/, "\\2 \\1")
-    }
-    case authors.count
-    when 0 then ;
-    when 1 then @params['author'] = authors[0]
-    when 2 then @params['author'] = authors
-    else        @params['author'] = "#{authors[0]} et al."
-    end
+    "//meta[@name=\"bepress_citation_#{name}\"]/@content"
   end
 
   def finders
     [
-      AuthorFinder, TitleFinder, DateFinder, SiteFinder, OpturlFinder,
-      VolFinder, PageFinder
+      AuthorFinder.with_finder(bepress_meta('author'), proc { |x|
+        x.to_s.sub(/^([^,]+), (.*)$/, "\\2 \\1")
+      }),
+      TitleFinder.with_finder(bepress_meta('title')),
+      DateFinder.with_finder(bepress_meta('date')),
+      VolFinder.with_finder(bepress_meta('volume')),
+      IssueFinder.with_finder(bepress_meta('issue')),
+      SiteFinder.with_finder(bepress_meta('journal_title')),
+      PageFinder,
+      OpturlFinder.with_finder(bepress_meta('abstract_html_url')),
     ]
   end
 

@@ -6,6 +6,7 @@ require 'open-uri'
 require 'shellwords'
 require 'ostruct'
 require 'optparse'
+require 'etc'
 
 require 'bbbib'
 
@@ -74,7 +75,7 @@ USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:58.0) ' + \
 if @options.infile
   file = open(@options.infile) { |f| f.read }
 else
-  curlargs = "-s -4 -L " + \
+  curlargs = "-s -4 -L --compressed " + \
     "--user-agent #{USER_AGENT.shellescape} #{url.to_s.shellescape}"
   file = `curl -k #{curlargs}`
   if file == ''
@@ -93,12 +94,23 @@ source = BBBib::Source.for(doc, url).new(doc, url)
 
 source.collect_params
 
+source.reconfigure_params
+
 res = "\n#{source.make_bib}\n"
 puts res
 unless @options.nocopy
-  open('|pbcopy', 'w') do |f|
-    f.puts res
+  copy_cmd = case Etc.uname[:sysname]
+             when 'Linux' then 'xclip -selection clipboard -i'
+             when 'Darwin' then 'pbcopy'
+             else
+               puts "Unknown platform #{Etc.uname[:sysname]}; not copying"
+               nil
+             end
+  if copy_cmd
+    open("|#{copy_cmd}", 'w') do |f|
+      f.puts res
+    end
+    puts "Copied to clipboard."
   end
-  puts "Copied to clipboard."
 end
 

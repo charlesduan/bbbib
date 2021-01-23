@@ -34,6 +34,14 @@ module BBBib; class Source
     end
   end
 
+  def reconfigure_params
+    if %w(vol journal page).all? { |x| @params[x] && @params[x] != '' }
+      @params['cite'] = %w(vol journal page).map { |x|
+        @params.delete(x)
+      }.join(" ")
+    end
+  end
+
   def ref_name(val = @params['author'])
     case val
     when nil then return nil
@@ -46,7 +54,7 @@ module BBBib; class Source
   end
 
   def source_type
-    if @params.include?('vol')
+    if @params.include?('vol') or @params.include?('cite')
       return 'jrnart'
     elsif @params.include?('page')
       return 'magart'

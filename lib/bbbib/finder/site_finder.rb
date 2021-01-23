@@ -5,6 +5,7 @@ module BBBib; class SiteFinder < Finder
 
   def finders
     return [
+      [ "//meta[@name=\"citation_journal_title\"]/@content" ],
       [ '//script[@type="application/ld+json"]',
         proc { |x|
           obj = JSON.parse(x.content)
@@ -22,11 +23,11 @@ module BBBib; class SiteFinder < Finder
     ]
   end
   def postprocess(text)
-    text = text.sub(/^./) { |x| x.upcase }.sub(/\.$/, '')
-    unless text =~ /[a-z]/
-      text = text.split(/\s+/).map { |x| x.capitalize }.join(" ")
-    end
-    text
+    text = text.sub(/\.$/, '')
+    tc = TitleCap.new
+    tc.aggressive = true
+    tc.conversion = :tex
+    return tc.recase(text)
   end
 end; end
 

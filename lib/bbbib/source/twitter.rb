@@ -4,17 +4,31 @@ module BBBib; class TwitterSource < Source
     url.host.end_with?('twitter.com')
   end
 
-  def collect_params
-    super
-    @params['author'] = @params['title'].gsub(/ on Twitter$/, '')
-    @params['date'] = DateTime.parse(@doc.at_css(
-      'div.permalink-tweet a.tweet-timestamp span._timestamp'
-    ).content).strftime("%b %-d %Y")
-    @params['title'] = @doc.at_xpath(
-      '//meta[@property="og:description"]/@content'
-    ).content.sub(/^\u201c/, '').sub(
-      /(\s+https?:\/\/[^ ]*|\s+@\w+)*\u201d?$/, ''
-    )
+  def finders
+    return [
+      TitleFinder.subclass {
+        def param ; "author" end
+        def postprocess(text) ; text.gsub(/ on Twitter$/, '') end
+      },
+      Finder.subclass {
+        def param ; "title" end
+        def finders
+          [ [
+            '//meta[@property="og:description"]/@content',
+            proc { |x|
+              x.content.sub(/^\u201c/, '').sub(
+                /(\s+https?:\/\/[^ ]*|\s+@\w+)*\u201d?$/, ''
+              )
+            }
+          ] ]
+        end
+      },
+      SiteFinder,
+      DateFinder.with_finder(
+        'div.permalink-tweet a.tweet-timestamp span._timestamp'
+      ),
+      UrlFinder,
+    ]
   end
 
 end; end

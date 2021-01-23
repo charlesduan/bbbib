@@ -4,11 +4,12 @@ module BBBib; class UrlFinder < Finder
   end
 
   def default_item
-    @url
+    @url.to_s
   end
 
   def finders
     return [
+      [ "//meta[@name=\"citation_abstract_html_url\"]/@content" ],
       [ '//link[@rel="canonical"]/@href' ],
       [ '//meta[@property="og:url"]/@content' ],
       [ '//meta[@name="sailthru:url"]/@content' ],

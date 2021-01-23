@@ -9,6 +9,7 @@ require 'bbbib/finder/site_finder'
 require 'bbbib/finder/title_finder'
 require 'bbbib/finder/url_finder'
 require 'bbbib/finder/vol_finder'
+require 'bbbib/finder/issue_finder'
 
 require 'bbbib/source'
 require 'bbbib/source/nyt'
