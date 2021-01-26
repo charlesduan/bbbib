@@ -12,7 +12,7 @@ module BBBib; class BepressSource < Source
   end
 
   def finders
-    [
+    res = [
       AuthorFinder.with_finder(bepress_meta('author'), proc { |x|
         x.to_s.sub(/^([^,]+), (.*)$/, "\\2 \\1")
       }),
@@ -24,6 +24,7 @@ module BBBib; class BepressSource < Source
       PageFinder,
       OpturlFinder.with_finder(bepress_meta('abstract_html_url')),
     ]
+    return res
   end
 
 

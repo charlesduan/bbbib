@@ -26,7 +26,7 @@ module BBBib; class Finder
   #
   def self.with_finder(*args)
     cls = Class.new(self)
-    def cls.finders
+    cls.define_method(:finders) do
       return [ args ]
     end
     return cls
