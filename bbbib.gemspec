@@ -15,5 +15,6 @@ Gem::Specification.new do |s|
         'test/**/*.rb',
         'bin/*'
     ].to_a
+    s.add_runtime_dependency "nokogiri", '~> 1.10'
 end
 
