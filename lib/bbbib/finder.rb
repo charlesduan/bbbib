@@ -56,7 +56,7 @@ module BBBib; class Finder
   #
   # - Optionally, a procedure for post-processing the result. Note that the
   #   procedure will be given a single XML node for processing, and should
-  #   return a string.
+  #   return a string or array of strings.
   #
   def finders
     raise "Must give finders"
@@ -129,7 +129,7 @@ module BBBib; class Finder
       begin
         items = res.to_a.map { |x|
           postproc ? postproc.call(x) : x.content
-        }
+        }.flatten
       rescue
         warn("For #{param}, finder #{xpath} failed: #$!")
         next
