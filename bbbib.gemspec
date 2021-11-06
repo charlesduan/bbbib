@@ -2,7 +2,7 @@ require 'rake'
 
 Gem::Specification.new do |s|
     s.name = 'bbbib'
-    s.version = '0.1.0'
+    s.version = '1.0.0'
     s.date = '2019-02-10'
     s.summary = 'Automatic bibliographic information retrieval'
     s.description = 'Collects information for citations to websites'
@@ -16,5 +16,7 @@ Gem::Specification.new do |s|
         'bin/*'
     ].to_a
     s.add_runtime_dependency "nokogiri", '~> 1.10'
+    s.license = 'MIT'
+    s.homepage = 'https://github.com/charlesduan/bbbib'
 end
 
