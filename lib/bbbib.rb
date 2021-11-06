@@ -20,5 +20,6 @@ require 'bbbib/source/gscholar'
 require 'bbbib/source/bepress'
 require 'bbbib/source/pubmed'
 require 'bbbib/source/hein'
+require 'bbbib/source/caselaw'
 
 require 'bbbib/titlecap'

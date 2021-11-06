@@ -172,19 +172,22 @@ module BBBib; class Finder
     return text
   end
 
-  def tex_escape(text)
+  def tex_escape(text, strip: true)
     unless text.is_a?(String)
       warn("Unexpected value to be tex escaped: #{text.class} #{text.inspect}")
       text = text.to_s
     end
-    text = text.strip
+    if (m = /<<([^>]+)>>/.match(text))
+      return tex_escape(m.pre_match, strip: false) +
+        m[1] + tex_escape(m.post_match, strip: false)
+    end
+    text = text.strip if strip
     text = text.gsub('&amp;', '&')
     text = text.gsub(/[^[:print:]]/, "?")
     text = text.gsub(/\s\s+/, " ")
     text = text.gsub(/\\/, "\\textbackslash")
     text = text.gsub(/[%{}]/) { "\\#$&" }
     text = more_tex_escape(text)
-    text = text.gsub("AMPERSAND", "&")
     return text
   end
   def more_tex_escape(text)

@@ -9,6 +9,18 @@ module BBBib; class Source
     return @subclasses.find { |sc| sc.accepts?(doc, url) } || self
   end
 
+  #
+  # Allows each source type to attempt to transform the URL.
+  #
+  def self.review_url(url)
+    @subclasses.each do |sc|
+      next unless sc.respond_to?(:transform_url)
+      res = sc.transform_url(url)
+      return res if res
+    end
+    return url
+  end
+
   def initialize(doc, url)
     @url = url
     @doc = doc

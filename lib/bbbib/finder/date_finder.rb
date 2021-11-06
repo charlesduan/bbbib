@@ -29,7 +29,7 @@ module BBBib; class DateFinder < Finder
   end
   def postprocess(item)
     return item if item =~ /^\d{4}$/
-    DateTime.parse(item).strftime("%b %-d %Y") rescue nil
+    DateTime.parse(item).strftime("%b %-d %Y") rescue item
   end
 end; end
 

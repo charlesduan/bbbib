@@ -32,7 +32,7 @@ module BBBib; class HeinSource < Source
       if a =~ /, /
         l, f = $`, $'
         if l =~ / /
-          "#{f} {#{l}}"
+          "#{f} <<{>>#{l}<<}>>"
         else
           "#{f} #{l}"
         end
