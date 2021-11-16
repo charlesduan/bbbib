@@ -1,8 +1,8 @@
 module BBBib; class HeinSource < Source
 
   def self.transform_url(url)
-    url = URI(url)
-    return nil unless url.host =~ /heinonline.org/
+    url = URI(url) rescue nil
+    return nil unless url && url.host =~ /heinonline.org/
     case url.path
     when /HOL\/Page/
       url.host = 'heinonline.org'
