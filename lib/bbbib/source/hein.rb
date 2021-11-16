@@ -2,10 +2,11 @@ module BBBib; class HeinSource < Source
 
   def self.transform_url(url)
     url = URI(url)
-    if url.host =~ /heinonline.org/ && url.path =~ /HOL\/Page/
+    return nil unless url.host =~ /heinonline.org/
+    case url.path
+    when /HOL\/Page/
       url.host = 'heinonline.org'
       url.path = '/HOL/LandingPage'
-      puts "URL is now #{url}"
       doc = Nokogiri::HTML(URI.open(url, &:read))
       img = doc.at_css('div#results img')['src'].to_s
       img_params = (url + img).query
@@ -16,6 +17,15 @@ module BBBib; class HeinSource < Source
         warn("Could not determine div of HeinOnline article")
         return nil
       end
+    when /HOL\/PDFsearchable/
+      old_query = URI.decode_www_form(url.query).to_h
+      url.host = 'heinonline.org'
+      url.path = '/HOL/LandingPage'
+      url.query = URI.encode_www_form(
+        'handle' => old_query['handle'],
+        'div' => old_query['section'],
+      )
+      return url.to_s
     else
       return nil
     end
