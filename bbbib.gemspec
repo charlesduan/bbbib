@@ -1,9 +1,10 @@
 require 'rake'
+require 'date'
 
 Gem::Specification.new do |s|
     s.name = 'bbbib'
-    s.version = '1.0.0'
-    s.date = '2019-02-10'
+    s.version = '1.0.1'
+    s.date = Date.today.to_s
     s.summary = 'Automatic bibliographic information retrieval'
     s.description = 'Collects information for citations to websites'
     s.author = [ 'Charles Duan' ]
