@@ -36,6 +36,11 @@ module BBBib; class TitleFinder < Finder
     return tc.recase(text)
 
   end
+
+  def tex_escape(text)
+    # This was already done in postprocess
+    return text
+  end
 end; end
 
 

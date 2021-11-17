@@ -29,6 +29,11 @@ module BBBib; class SiteFinder < Finder
     tc.conversion = :tex
     return tc.recase(text)
   end
+
+  def tex_escape(text)
+    # Already done in postprocess
+    return text
+  end
 end; end
 
 
