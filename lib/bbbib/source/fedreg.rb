@@ -32,7 +32,7 @@ module BBBib; class FedRegSource < Source
   def ref_name
     [ @params['agency'] ].flatten.map { |a|
       a.gsub(/[^A-Z]+/, '').downcase
-    }.join('-') + (@params['date'].split(' ').last.to_i % 100).to_s
+    }.join('-') + sprintf('%02d', @params['date'].split(' ').last.to_i % 100)
   end
 
   class FedRegFinder < Finder
