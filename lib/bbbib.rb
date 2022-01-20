@@ -22,5 +22,6 @@ require 'bbbib/source/pubmed'
 require 'bbbib/source/hein'
 require 'bbbib/source/caselaw'
 require 'bbbib/source/fedreg'
+require 'bbbib/source/fcc'
 
 require 'bbbib/titlecap'

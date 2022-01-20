@@ -1,7 +1,7 @@
-module BBBib; class FedRegSource < Source
+module BBBib; class FCCSource < Source
 
   def self.accepts?(doc, url)
-    url.host.end_with?('federalregister.gov') && \
+    url.host.end_with?('fcc.gov') && \
       doc.at_xpath('//meta[@property="og:type"]/@content').to_s == 'article'
   end
 
@@ -11,19 +11,21 @@ module BBBib; class FedRegSource < Source
 
   def finders
     return [
-      AgencyFinder,
+      Finder.static('agency', 'Federal Communications Commission'),
       TitleFinder.with_finder(
         "//meta[@property='og:title']/@content",
         proc { |x| x.to_s.sub(/; .*/, '') }
       ),
       VolFinder.with_finder(
-        "//dd[@id='document-citation']/@data-citation-vol"
+        '//ul[@class="edocs"]/li[strong="FCC Record Citation:"]/text()',
+        proc { |x| x.to_s.sub(/^\s*(\d+) FCC Rcd.*/, "\\1") }
       ),
-      Finder.static('journal', 'Fed. Reg.'),
+      Finder.static('journal', 'F.C.C. Rcd.'),
       PageFinder.with_finder(
-        "//dd[@id='document-citation']",
-        proc { |x| x.content.sub(/.* FR /, '') }
+        '//ul[@class="edocs"]/li[strong="FCC Record Citation:"]/text()',
+        proc { |x| x.to_s.sub(/^.*FCC Rcd (\d+).*/, "\\1") }
       ),
+      ParenFinder,
       DateFinder,
       OpturlFinder,
     ]
@@ -35,16 +37,15 @@ module BBBib; class FedRegSource < Source
     }.join('-') + sprintf('%02d', @params['date'].split(' ').last.to_i % 100)
   end
 
-  AgencyFinder = AuthorFinder.subclass do
+  class ParenFinder < Finder
     def param
-      'agency'
+      'paren'
     end
     def finders
       return [
         [
-          '//span[@class="agencies"]', proc { |x|
-            x.xpath('./a').map(&:content)
-          }
+          '//ul[@class="edocs"]/li[strong="Document Type(s):"]/text()',
+          proc { |x| x.to_s.strip.downcase }
         ]
       ]
     end

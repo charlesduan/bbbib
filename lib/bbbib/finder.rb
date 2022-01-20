@@ -32,6 +32,20 @@ module BBBib; class Finder
     return cls
   end
 
+  def self.static(param, val)
+    cls = Class.new(self)
+    cls.define_method(:finders) do
+      return []
+    end
+    cls.define_method(:param) do
+      return param
+    end
+    cls.define_method(:default_item) do
+      return val
+    end
+    return cls
+  end
+
   ########################################################################
   #
   # API METHODS
