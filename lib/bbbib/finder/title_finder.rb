@@ -32,15 +32,13 @@ module BBBib; class TitleFinder < Finder
 
     tc = TitleCap.new
     tc.aggressive = true
+
+    # TODO: Does not interact with Formatter properly
     tc.conversion = :tex
     return tc.recase(text)
 
   end
 
-  def tex_escape(text)
-    # This was already done in postprocess
-    return text
-  end
 end; end
 
 

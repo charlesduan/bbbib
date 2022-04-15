@@ -172,41 +172,7 @@ module BBBib; class Finder
     return nil
   end
 
-  #
-  # Converts a text of this finder to the desired output format. TODO: This
-  # should be moved to a separate system.
-  #
   def make_param(text)
-    return "" unless text
-    return text.map { |x| make_param(x) } if text.is_a?(Array)
-    text = tex_escape(text)
-    while text =~ /^[^\n]{72}/ && text =~ /^([^\n]{1,72}) /
-      text = "#$1\n#$'"
-    end
-    return text
-  end
-
-  def tex_escape(text, strip: true)
-    unless text.is_a?(String)
-      warn("Unexpected value to be tex escaped: #{text.class} #{text.inspect}")
-      text = text.to_s
-    end
-    if (m = /<<([^>]+)>>/.match(text))
-      return tex_escape(m.pre_match, strip: false) +
-        m[1] + tex_escape(m.post_match, strip: false)
-    end
-    text = text.strip if strip
-    text = text.gsub('&amp;', '&')
-    text = text.gsub(/[^[:print:]]/, "?")
-    text = text.gsub(/\s\s+/, " ")
-    text = text.gsub(/\\/, "\\textbackslash")
-    text = text.gsub(/[%{}]/) { "\\#$&" }
-    text = more_tex_escape(text)
-    return text
-  end
-  def more_tex_escape(text)
-    text = text.gsub(/[#\$^&_]/) { "\\#$&" }
-    text = text.gsub(/~/, "\\textasciitilde")
     return text
   end
 

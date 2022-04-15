@@ -24,4 +24,6 @@ require 'bbbib/source/caselaw'
 require 'bbbib/source/fedreg'
 require 'bbbib/source/fcc'
 
+require 'bbbib/formatter'
+
 require 'bbbib/titlecap'
