@@ -134,18 +134,19 @@ module BBBib
     def format_default(source)
       res = "@#{source.source_type}{#{source.ref_name},\n"
       source.params.each do |k, v|
-        vtext = [ v ].flatten.map {
-          |av| "{#{tex_value(k, av)}}"
-        }
-        if vtext.count > 1
+        v = [ v ].flatten
+        if v.count > 1
           warn("Unexpected multivalue parameter #{k}") unless k == 'author'
-          vtext = "{#{vtext.join(" and ")}}"
-        elsif k == 'author' && vtext.first =~ / and /
-          vtext = "{#{vtext.first}}"
-        else
-          vtext = vtext.first
         end
-        res << "    #{k}=#{vtext},\n"
+        case k
+        when 'author'
+          v = v.map { |av| "{#{tex_value(k, av)}}" }.join(" and ")
+        when 'date'
+          v = Date.parse(v.first).iso8601
+        else
+          v = v.first
+        end
+        res << "    #{k}={#{v}},\n"
       end
       res << "}"
       return res
