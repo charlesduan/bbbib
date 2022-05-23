@@ -64,10 +64,9 @@ opt_parser = OptionParser.new do |opts|
   end
 
   opts.on('-f', '--formatter NAME', 'Choose output formatter') do |f|
-    formatters = {
-      'tex' => BBBib::TeXFormatter,
-      'text' => BBBib::TextFormatter,
-    }
+    formatters = BBBib::Formatter::FORMATTERS.map { |c|
+      [ c.name, c ]
+    }.to_h
     if formatters.include?(f)
       @options.formatter = formatters[f].new
     else

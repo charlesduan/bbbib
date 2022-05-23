@@ -1,5 +1,10 @@
 module BBBib
   class Formatter
+    def self.inherited(subclass)
+      FORMATTERS.push(subclass)
+    end
+    FORMATTERS = []
+
     def format(source)
       macro = "format_#{source.source_type}".to_sym
       if respond_to?(macro)
@@ -11,6 +16,10 @@ module BBBib
   end
 
   class TeXFormatter < Formatter
+
+    def self.name
+      "tex"
+    end
 
     def format_default(source)
       res = "\\def#{source.source_type}{#{source.ref_name}}{\n"
@@ -63,6 +72,11 @@ module BBBib
   end
 
   class TextFormatter < Formatter
+
+    def self.name
+      "text"
+    end
+
     def format_default(source)
       res = []
       params = source.params
@@ -111,6 +125,33 @@ module BBBib
     end
   end
 
+  class BibtexFormatter < TeXFormatter
+
+    def self.name
+      "bibtex"
+    end
+
+    def format_default(source)
+      res = "@#{source.source_type}{#{source.ref_name},\n"
+      source.params.each do |k, v|
+        vtext = [ v ].flatten.map {
+          |av| "{#{tex_value(k, av)}}"
+        }
+        if vtext.count > 1
+          warn("Unexpected multivalue parameter #{k}") unless k == 'author'
+          vtext = "{#{vtext.join(" and ")}}"
+        elsif k == 'author' && vtext.first =~ / and /
+          vtext = "{#{vtext.first}}"
+        else
+          vtext = vtext.first
+        end
+        res << "    #{k}=#{vtext},\n"
+      end
+      res << "}"
+      return res
+    end
+
+  end
 
 end
 
