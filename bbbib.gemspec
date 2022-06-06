@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
         'test/**/*.rb',
         'bin/*'
     ].to_a
-    s.add_runtime_dependency "nokogiri", '~> 1.10'
+    s.add_runtime_dependency "nokogiri", '~> 1.5'
     s.license = 'MIT'
     s.homepage = 'https://github.com/charlesduan/bbbib'
 end

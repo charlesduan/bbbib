@@ -10,7 +10,8 @@ require 'etc'
 
 require 'bbbib'
 
-@commands = case Etc.uname[:sysname]
+name = `uname`.chomp
+@commands = case name
             when 'Linux' then {
               :copy => 'xclip -selection clipboard -i',
               :paste => 'xclip -selection clipboard -o',
