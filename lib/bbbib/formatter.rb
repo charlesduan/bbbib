@@ -142,11 +142,7 @@ module BBBib
         when 'author'
           v = v.map { |av| "#{tex_value(k, av)}" }.join(" and ")
         when 'date'
-          if v.first =~ /^\d{4}$/
-            v = v.first
-          else
-            v = Date.parse(v.first).iso8601
-          end
+          v = Date.parse(v.first).iso8601 rescue v.first
         else
           v = v.first
         end
