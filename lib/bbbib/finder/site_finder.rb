@@ -26,14 +26,12 @@ module BBBib; class SiteFinder < Finder
     text = text.sub(/\.$/, '')
     tc = TitleCap.new
     tc.aggressive = true
+
+    # TODO: Does not interact with Formatter properly
     tc.conversion = :tex
     return tc.recase(text)
   end
 
-  def tex_escape(text)
-    # Already done in postprocess
-    return text
-  end
 end; end
 
 

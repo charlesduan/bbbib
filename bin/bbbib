@@ -31,6 +31,7 @@ name = `uname`.chomp
   :nocopy => false,
   :infile => nil,
   :url => nil,
+  :formatter => BBBib::TeXFormatter.new,
 )
 
 opt_parser = OptionParser.new do |opts|
@@ -60,6 +61,17 @@ opt_parser = OptionParser.new do |opts|
       def msg(message)
         STDERR.puts(message)
       end
+    end
+  end
+
+  opts.on('-f', '--formatter NAME', 'Choose output formatter') do |f|
+    formatters = BBBib::Formatter::FORMATTERS.map { |c|
+      [ c.name, c ]
+    }.to_h
+    if formatters.include?(f)
+      @options.formatter = formatters[f].new
+    else
+      raise "Invalid formatter; valid options are #{formatters.keys.join(' ')}"
     end
   end
 
@@ -122,7 +134,7 @@ source.collect_params
 
 source.reconfigure_params
 
-res = "\n#{source.make_bib}\n"
+res = "\n#{@options.formatter.format(source)}\n"
 puts res
 unless @options.nocopy
   copy_cmd = @commands[:copy]

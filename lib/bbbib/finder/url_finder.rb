@@ -28,9 +28,6 @@ module BBBib; class UrlFinder < Finder
     end
   end
 
-  def more_tex_escape(text)
-    return text
-  end
 end; end
 
 

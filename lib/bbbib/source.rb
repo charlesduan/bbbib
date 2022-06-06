@@ -75,16 +75,4 @@ module BBBib; class Source
     end
   end
 
-  def make_bib
-    res = "\\def#{source_type}{#{ref_name}}{\n"
-    @params.each do |k, v|
-      [ v ].flatten.each do |av|
-        av = "{#{av}}" if av =~ /[=,]/
-        res << "#{k}=#{av},\n"
-      end
-    end
-    res << "}"
-    return res
-  end
-
 end; end
