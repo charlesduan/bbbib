@@ -26,7 +26,7 @@ module BBBib; class Finder
   #
   def self.with_finder(*args)
     cls = Class.new(self)
-    cls.define_method(:finders) do
+    cls.send(:define_method, :finders) do
       return [ args ]
     end
     return cls
@@ -34,13 +34,13 @@ module BBBib; class Finder
 
   def self.static(param, val)
     cls = Class.new(self)
-    cls.define_method(:finders) do
+    cls.send(:define_method, :finders) do
       return []
     end
-    cls.define_method(:param) do
+    cls.send(:define_method, :param) do
       return param
     end
-    cls.define_method(:default_item) do
+    cls.send(:define_method, :default_item) do
       return val
     end
     return cls
