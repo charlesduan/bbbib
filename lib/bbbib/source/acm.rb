@@ -1,7 +1,6 @@
 module BBBib; class ACMSource < Source
   def self.accepts?(doc, url)
     text = doc.xpath('//meta[@property="og:url"]')
-    print "TEXT IS #{text.inspect}"
     text && text.to_s =~ /dl\.acm\.org/
   end
 
