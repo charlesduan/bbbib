@@ -140,9 +140,14 @@ module BBBib
         end
         case k
         when 'author'
-          v = v.map { |av| "{#{tex_value(k, av)}}" }.join(" and ")
+          v = v.map { |av|
+            "#{tex_value(k, av)}".sub(/ et al\.$/, ' and others')
+          }.join(" and ")
         when 'date'
-          v = Date.parse(v.first).iso8601
+          if v.first && v.first =~ /^\w+ \d+ \d+$/
+            v = Date.parse(v.first).iso8601
+          else v = v.first
+          end
         else
           v = v.first
         end

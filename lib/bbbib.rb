@@ -23,6 +23,7 @@ require 'bbbib/source/hein'
 require 'bbbib/source/caselaw'
 require 'bbbib/source/fedreg'
 require 'bbbib/source/fcc'
+require 'bbbib/source/acm'
 
 require 'bbbib/formatter'
 

@@ -29,11 +29,24 @@ module BBBib; class CaseLawSource < Source
   end
 
   def finders
-    [ PartiesFinder, CiteFinder, ParallelCiteFinder, CourtFinder, YearFinder ]
+    [
+      PartiesFinder, CiteFinder, ParallelCiteFinder, CourtFinder, YearFinder,
+      OptUrlFinder
+    ]
   end
 
   def ref_name
     @params['parties'].sub(/^in re /i, '').split(/\s/).first.downcase
+  end
+
+  class OptUrlFinder < Finder
+    def param
+      "opturl"
+    end
+
+    def find
+      JSON.parse(@doc.content)['results'][0]['frontend_url']
+    end
   end
 
   class PartiesFinder < Finder
