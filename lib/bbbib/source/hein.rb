@@ -18,7 +18,7 @@ module BBBib; class HeinSource < Source
         return nil
       end
     when /HOL\/PDFsearchable/
-      old_query = URI.decode_www_form(url.query).to_h
+      old_query = Hash[URI.decode_www_form(url.query)]
       url.host = 'heinonline.org'
       url.path = '/HOL/LandingPage'
       url.query = URI.encode_www_form(
@@ -53,7 +53,7 @@ module BBBib; class HeinSource < Source
   HEIN_SPAN = "//span[@class='Z3988']/@title"
 
   def hein_span(param, node)
-    URI.decode_www_form(node.content).to_h["rft.#{param}"]
+    Hash[URI.decode_www_form(node.content)]["rft.#{param}"]
   end
 
   def hein_author(node)
