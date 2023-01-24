@@ -93,6 +93,7 @@ else
   puts "Enter a URL:"
   @options.url = STDIN.readline.chomp
 end
+@options.url.gsub!(/#.*$/, '')
 url = URI(BBBib::Source.review_url(@options.url))
 doc = file = nil
 

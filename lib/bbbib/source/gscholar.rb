@@ -16,6 +16,8 @@ module BBBib; class GScholarSource < Source
     @params['parties'].sub(/^in re /i, '').split(/\s/).first.downcase
   end
 
+  HEADER_REGEX = /^(.*), \d+ [\w. ]+ \d+ - ([\w.:, ]+) \d{4}$/
+
   class PartiesFinder < Finder
     def param
       "parties"
@@ -26,10 +28,10 @@ module BBBib; class GScholarSource < Source
     end
 
     def postprocess(item)
-      if item =~ /^(.*), \d+ [\w. ]+ \d+ - [\w., ]+ \d{4}$/
+      if item =~ HEADER_REGEX
         return $1
       else
-        return nil
+        return '???'
       end
     end
   end
@@ -44,9 +46,9 @@ module BBBib; class GScholarSource < Source
     end
 
     def postprocess(item)
-      if item =~ /^.*, \d+ [\w. ]+ \d+ - ([\w., ]+) \d{4}$/
-        court = $1
-        msg("      Found court #$1...")
+      if item =~ HEADER_REGEX
+        court = $2
+        msg("      Found court #$2...")
         return lookup_court(court)
       else
         return nil
