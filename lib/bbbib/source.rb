@@ -59,7 +59,7 @@ module BBBib; class Source
     when nil then return nil
     when Array then return val.map { |x| ref_name(x) }.join("-")
     when /^\{?(.+?)\}?$/
-      authln = $1.sub(/ et al\./, '').split(/\s+/).last.downcase
+      authln = $1.sub(/ et al\./, '').split(/\s+/).last.downcase.sub(/,$/, '')
       authln = nil unless authln =~ /^[\w-]+$/
       return authln
     end

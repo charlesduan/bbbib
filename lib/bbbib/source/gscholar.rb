@@ -13,7 +13,7 @@ module BBBib; class GScholarSource < Source
   end
 
   def ref_name
-    @params['parties'].sub(/^in re /i, '').split(/\s/).first.downcase
+    @params['parties'].sub(/^in re /i, '').split(/[,\s]+/).first.downcase
   end
 
   HEADER_REGEX = /^(.*), \d+ [\w. ]+ \d+ - ([\w.:, ]+) \d{4}$/
