@@ -1,6 +1,8 @@
 module BBBib
 end
 
+require 'bbbib/court_abbreviator'
+
 require 'bbbib/finder'
 require 'bbbib/finder/author_finder'
 require 'bbbib/finder/date_finder'
@@ -24,6 +26,7 @@ require 'bbbib/source/caselaw'
 require 'bbbib/source/fedreg'
 require 'bbbib/source/fcc'
 require 'bbbib/source/acm'
+require 'bbbib/source/courtlistener'
 
 require 'bbbib/formatter'
 
