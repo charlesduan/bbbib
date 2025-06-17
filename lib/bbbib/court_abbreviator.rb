@@ -1,20 +1,23 @@
 module BBBib
   module CourtAbbreviator
+
+    COURTOFAPPEALS = /(?:Circuit )?Court of Appeals, /
+    DISTRICTCOURT = /Dist(?:\.|rict) Court, /
     def lookup_court(court)
       case court
       when 'Supreme Court'
         return nil
-      when 'Court of Appeals, Federal Circuit'
+      when /^{COURTOFAPPEALS}Federal Circuit$/
         return 'Fed. Cir.'
-      when /^Court of Appeals, ([23])[rn]d Circuit$/
+      when /^#{COURTOFAPPEALS}([23])[rn]d Circuit$/
         return "#$1d Cir."
-      when /^Court of Appeals, (\d+\w\w) Circuit$/
+      when /^#{COURTOFAPPEALS}(\d+\w\w) Circuit$/
         return "#$1 Cir."
-      when 'Court of Appeals, Dist. of Columbia Circuit'
+      when /^#{COURTOFAPPEALS}Dist\. of Columbia Circuit$/
         return 'D.C. Cir.'
-      when /^Dist(?:\.|rict) Court, (\w)\.?D\.? (\w+)$/
+      when /^#{DISTRICTCOURT}(\w)\.?D\.? ([\w ]+)$/
         return collapse_space("#$1.D. #{lookup_state($2)}")
-      when /^Dist(?:\.|rict) Court, (?:D\.? )?(\w+)$/
+      when /^#{DISTRICTCOURT}(?:D\.? )?([\w ]+)$/
         return collapse_space("D. #{lookup_state($2)}")
       else
         return court

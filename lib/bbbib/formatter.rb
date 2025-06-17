@@ -60,7 +60,6 @@ module BBBib
       text = text.gsub(/\s\s+/, " ")
       text = text.gsub(/\\/, "\\textbackslash")
       text = text.gsub(/[%{}]/) { "\\#$&" }
-      text = more_tex_escape(text)
       return text
     end
     def more_tex_escape(text)
