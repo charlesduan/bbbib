@@ -117,9 +117,16 @@ else
       meta['http-equiv'] && meta['http-equiv'].downcase == 'refresh' && (
         meta['url'] || ( meta['content'] =~ /[\s;,]+url=/ && $' )
       )
-    }.compact.first
-    break unless refresh
-    url += refresh
+    }
+
+    refresh += doc.xpath('//script').map { |script|
+        script.content.match(/window\.location\.href\s*=\s*"([^"]+)"/) { |m|
+            m[1]
+        }
+    }
+
+    break unless refresh.compact.first
+    url += refresh.compact.first
   end
 end
 
