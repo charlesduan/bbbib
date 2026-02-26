@@ -7,7 +7,7 @@ module BBBib
       case court
       when 'Supreme Court'
         return nil
-      when /^{COURTOFAPPEALS}Federal Circuit$/
+      when /^#{COURTOFAPPEALS}Federal Circuit$/
         return 'Fed. Cir.'
       when /^#{COURTOFAPPEALS}([23])[rn]d Circuit$/
         return "#$1d Cir."
